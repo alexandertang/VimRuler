@@ -47,7 +47,7 @@ socket.on('update', function(data) {
   var text = data.text;
 
   if (player === '1') {
-    editSession1.getDocument().setValue(text)
+    editSession1.getDocument().setValue(text);
   } else {
     editSession2.getDocument().setValue(text);
   }

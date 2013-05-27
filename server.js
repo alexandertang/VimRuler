@@ -7,6 +7,8 @@ var express = require('express'),
 
 var dmp = new diff_match_patch();
 var won = false;
+var port = 8080;
+var target;
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -15,31 +17,38 @@ app.get('/', function(req, res) {
 });
 
 io.sockets.on('connection', function(socket) {
-  var target;
-
   socket.on('getTarget', function(data) {
     target = data;
   });
 
   socket.on('keyup', function(data) {
-    var player = data.player;
-    var text = data.text;
+    var player;
 
-    if (text !== null) {
-      var diffs = dmp.diff_main(text, target);
-
-      console.log("Player " + player);
-      console.log(diffs);
-
-      // win condition
-      if (diffs.length === 1 && diffs[0][0] === 0 && won === false) {
-        won = true;
-        socket.emit('endgame', player);
-      }
+    if (player = check_win(data)) {
+      won = true;
+      socket.emit('endgame', player);
     }
+
     socket.broadcast.emit('update', data);
   });
 });
 
-server.listen(8080);
-console.log("Server running on localhost:8080");
+function check_win(data) {
+  var player = data.player;
+  var text = data.text;
+
+  if (text === null) return false;
+
+  var diffs = dmp.diff_main(text, target);
+
+  console.log("Player " + player);
+  console.log(diffs);
+
+  // win condition
+  if (diffs.length === 1 && diffs[0][0] === 0 && won === false) {
+    return player;
+  }
+}
+
+server.listen(port);
+console.log("Server running on localhost:" + port);
