@@ -28,19 +28,18 @@ io.sockets.on('connection', function(socket) {
     if (text !== null) {
       var diffs = dmp.diff_main(text, target);
 
+      console.log("Player " + player);
       console.log(diffs);
-      console.log(diffs.length);
 
       // win condition
       if (diffs.length === 1 && diffs[0][0] === 0 && won === false) {
-        socket.emit('endgame', player);
         won = true;
+        socket.emit('endgame', player);
       }
     }
     socket.broadcast.emit('update', data);
   });
 });
-
 
 server.listen(8080);
 console.log("Server running on localhost:8080");
