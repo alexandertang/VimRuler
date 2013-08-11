@@ -11,6 +11,8 @@ Make rooms for people
 vim tips pop up based on target  
 
 To install:  
+```
 npm install  
 git submodule init  
-git submodule update  
+git submodule update
+```
